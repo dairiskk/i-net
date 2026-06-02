@@ -10,14 +10,14 @@ import {
   localizeProduct,
   type Product,
 } from "@/lib/catalog";
-import { localizedPath, t, type Locale } from "@/lib/i18n";
+import { defaultLocale, localizedPath, t, type Locale } from "@/lib/i18n";
 
 type ProductCardProps = {
   product: Product;
   locale?: Locale;
 };
 
-export function ProductCard({ product, locale = "en" }: ProductCardProps) {
+export function ProductCard({ product, locale = defaultLocale }: ProductCardProps) {
   const copy = t(locale);
   const localizedProduct = localizeProduct(product, locale);
   const brand = getBrandById(product.brandId);

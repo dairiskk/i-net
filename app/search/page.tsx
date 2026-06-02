@@ -6,5 +6,5 @@ export const metadata = {
 };
 
 export default function SearchPage() {
-  return <SearchExperience locale="en" />;
+  return <SearchExperience locale="lv" />;
 }

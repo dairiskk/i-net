@@ -8,8 +8,13 @@ import {
   getBrandById,
   getCategoryById,
   getProduct,
+  localizeAvailability,
+  localizeBrand,
+  localizeCategory,
+  localizeProduct,
   products,
 } from "@/lib/catalog";
+import { localizedPath, t } from "@/lib/i18n";
 
 export const revalidate = 300;
 
@@ -29,12 +34,14 @@ export async function generateMetadata({
     return {};
   }
 
+  const localizedProduct = localizeProduct(product, "lv");
+
   return {
-    title: product.name,
-    description: product.description,
+    title: localizedProduct.name,
+    description: localizedProduct.description,
     openGraph: {
-      title: product.name,
-      description: product.description,
+      title: localizedProduct.name,
+      description: localizedProduct.description,
       images: [product.mainImage],
     },
   };
@@ -46,6 +53,8 @@ export default async function ProductPage({
   params: Promise<{ productSlug: string }>;
 }) {
   const { productSlug } = await params;
+  const locale = "lv";
+  const copy = t(locale);
   const product = getProduct(productSlug);
 
   if (!product) {
@@ -55,15 +64,19 @@ export default async function ProductPage({
   const brand = getBrandById(product.brandId);
   const category = getCategoryById(product.categoryId);
   const parentCategory = category?.parentId ? getCategoryById(category.parentId) : undefined;
+  const localizedProduct = localizeProduct(product, locale);
+  const localizedBrand = brand ? localizeBrand(brand, locale) : undefined;
+  const localizedCategory = category ? localizeCategory(category, locale) : undefined;
+  const localizedParentCategory = parentCategory ? localizeCategory(parentCategory, locale) : undefined;
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: product.name,
+    name: localizedProduct.name,
     sku: product.sku,
-    brand: brand?.name,
-    category: category?.name,
+    brand: localizedBrand?.name,
+    category: localizedCategory?.name,
     image: product.mainImage,
-    description: product.description,
+    description: localizedProduct.description,
     offers: {
       "@type": "Offer",
       price: product.price,
@@ -83,26 +96,26 @@ export default async function ProductPage({
       />
       <nav className="text-sm font-semibold text-stone-500">
         <Link href="/" className="hover:text-orange-700">
-          Home
+          {copy.nav.home}
         </Link>
         <span className="px-2">/</span>
         {category ? (
           <>
             {parentCategory ? (
               <>
-                <Link href={`/categories/${parentCategory.slug}`} className="hover:text-orange-700">
-                  {parentCategory.name}
+                <Link href={localizedPath(locale, `/categories/${parentCategory.slug}`)} className="hover:text-orange-700">
+                  {localizedParentCategory?.name}
                 </Link>
                 <span className="px-2">/</span>
               </>
             ) : null}
-            <Link href={`/categories/${category.slug}`} className="hover:text-orange-700">
-              {category.name}
+            <Link href={localizedPath(locale, `/categories/${category.slug}`)} className="hover:text-orange-700">
+              {localizedCategory?.name}
             </Link>
           </>
         ) : null}
         <span className="px-2">/</span>
-        {product.name}
+        {localizedProduct.name}
       </nav>
 
       <section className="mt-8 grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
@@ -110,7 +123,7 @@ export default async function ProductPage({
           <div className="overflow-hidden rounded-lg bg-white shadow-sm ring-1 ring-stone-200">
             <Image
               src={product.mainImage}
-              alt={product.name}
+              alt={localizedProduct.name}
               width={900}
               height={675}
               priority
@@ -123,7 +136,7 @@ export default async function ProductPage({
               <Image
                 key={image}
                 src={image}
-                alt={`${product.name} gallery`}
+                alt={localizedProduct.name}
                 width={300}
                 height={225}
                 sizes="(min-width: 1024px) 18vw, 33vw"
@@ -135,24 +148,24 @@ export default async function ProductPage({
 
         <div>
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-orange-700">
-            {brand?.name} / {category?.name}
+            {localizedBrand?.name} / {localizedCategory?.name}
           </p>
-          <h1 className="mt-3 text-5xl font-black leading-none text-emerald-950">{product.name}</h1>
-          <p className="mt-5 text-lg leading-8 text-stone-700">{product.description}</p>
+          <h1 className="mt-3 text-5xl font-black leading-none text-emerald-950">{localizedProduct.name}</h1>
+          <p className="mt-5 text-lg leading-8 text-stone-700">{localizedProduct.description}</p>
 
           <div className="mt-6 grid gap-3 rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between gap-4">
-              <span className="text-sm font-bold text-stone-500">Price</span>
+              <span className="text-sm font-bold text-stone-500">{copy.product.price}</span>
               <span className="text-3xl font-black text-emerald-950">{formatPrice(product.price)}</span>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <span className="text-sm font-bold text-stone-500">Availability</span>
+              <span className="text-sm font-bold text-stone-500">{copy.product.availability}</span>
               <span className="rounded-md bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-950">
-                {product.availability}
+                {localizeAvailability(product, locale)}
               </span>
             </div>
             <div className="flex items-center justify-between gap-4">
-              <span className="text-sm font-bold text-stone-500">Product code</span>
+              <span className="text-sm font-bold text-stone-500">{copy.product.code}</span>
               <span className="font-mono text-sm font-bold text-stone-900">{product.sku}</span>
             </div>
           </div>
@@ -162,13 +175,13 @@ export default async function ProductPage({
               href="#request"
               className="inline-flex h-12 items-center justify-center rounded-md bg-orange-600 px-6 text-base font-bold text-white hover:bg-orange-700"
             >
-              Request Product
+              {copy.product.requestProduct}
             </a>
             <a
               href="#request"
               className="inline-flex h-12 items-center justify-center rounded-md border border-stone-300 px-6 text-base font-bold text-stone-950 hover:bg-stone-100"
             >
-              Ask Question
+              {copy.product.askQuestion}
             </a>
           </div>
         </div>
@@ -176,7 +189,7 @@ export default async function ProductPage({
 
       <section className="mt-12 grid gap-8 lg:grid-cols-[1fr_420px]">
         <div className="rounded-lg bg-white p-6 shadow-sm ring-1 ring-stone-200">
-          <h2 className="text-2xl font-black text-stone-950">Technical specifications</h2>
+          <h2 className="text-2xl font-black text-stone-950">{copy.product.specs}</h2>
           <dl className="mt-5 grid gap-3">
             {Object.entries(product.specifications).map(([key, value]) => (
               <div key={key} className="grid grid-cols-[140px_1fr] gap-4 border-b border-stone-100 pb-3">
@@ -187,7 +200,7 @@ export default async function ProductPage({
           </dl>
         </div>
         <div id="request">
-          <InquiryForm productName={product.name} />
+          <InquiryForm productName={localizedProduct.name} locale={locale} />
         </div>
       </section>
     </main>

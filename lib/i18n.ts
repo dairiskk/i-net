@@ -2,7 +2,7 @@ export const locales = ["en", "lv", "ru"] as const;
 
 export type Locale = (typeof locales)[number];
 
-export const defaultLocale: Locale = "en";
+export const defaultLocale: Locale = "lv";
 
 export function isLocale(value: string | undefined): value is Locale {
   return locales.includes(value as Locale);
@@ -32,6 +32,10 @@ export const dictionary = {
       searchPlaceholder: "Search products, brands, categories",
       searchCatalog: "Search catalog",
       home: "Home",
+      lightTheme: "Light theme",
+      darkTheme: "Dark theme",
+      lightShort: "Light",
+      darkShort: "Dark",
     },
     home: {
       eyebrow: "Premium hunting catalog",
@@ -135,6 +139,10 @@ export const dictionary = {
       searchPlaceholder: "Meklēt preces, zīmolus, kategorijas",
       searchCatalog: "Meklēt katalogā",
       home: "Sākums",
+      lightTheme: "Gaišā tēma",
+      darkTheme: "Tumšā tēma",
+      lightShort: "Gaišs",
+      darkShort: "Tumšs",
     },
     home: {
       eyebrow: "Premium medību katalogs",
@@ -238,6 +246,10 @@ export const dictionary = {
       searchPlaceholder: "Искать товары, бренды, категории",
       searchCatalog: "Поиск по каталогу",
       home: "Главная",
+      lightTheme: "Светлая тема",
+      darkTheme: "Темная тема",
+      lightShort: "Светлая",
+      darkShort: "Темная",
     },
     home: {
       eyebrow: "Премиальный охотничий каталог",

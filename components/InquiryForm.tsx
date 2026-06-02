@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { t, type Locale } from "@/lib/i18n";
+import { defaultLocale, t, type Locale } from "@/lib/i18n";
 
 type InquiryFormProps = {
   productName?: string;
   locale?: Locale;
 };
 
-export function InquiryForm({ productName = "", locale = "en" }: InquiryFormProps) {
+export function InquiryForm({ productName = "", locale = defaultLocale }: InquiryFormProps) {
   const [submitted, setSubmitted] = useState(false);
   const copy = t(locale).inquiry;
 

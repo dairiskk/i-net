@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { localizeBrand, localizeCategory, searchCatalog } from "@/lib/catalog";
-import { localizedPath, t, type Locale } from "@/lib/i18n";
+import { defaultLocale, localizedPath, t, type Locale } from "@/lib/i18n";
 import { ProductCard } from "./ProductCard";
 
-export function SearchExperience({ locale = "en" }: { locale?: Locale }) {
+export function SearchExperience({ locale = defaultLocale }: { locale?: Locale }) {
   const [query, setQuery] = useState("");
   const results = useMemo(() => searchCatalog(query), [query]);
   const copy = t(locale).searchPage;

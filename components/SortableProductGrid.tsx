@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useSyncExternalStore } from "react";
 import { ProductCard } from "@/components/ProductCard";
 import type { Product } from "@/lib/catalog";
-import type { Locale } from "@/lib/i18n";
+import { defaultLocale, type Locale } from "@/lib/i18n";
 
 type SortOption = {
   value: "newest" | "name" | "price";
@@ -19,24 +19,11 @@ type SortableProductGridProps = {
 
 export function SortableProductGrid({
   products,
-  locale = "en",
+  locale = defaultLocale,
   sortLabel,
   sortOptions,
 }: SortableProductGridProps) {
-  const [sort, setSort] = useState<SortOption["value"]>(() => {
-    if (typeof window === "undefined") {
-      return "newest";
-    }
-
-    const params = new URLSearchParams(window.location.search);
-    const value = params.get("sort");
-
-    if (value === "name" || value === "price" || value === "newest") {
-      return value;
-    }
-
-    return "newest";
-  });
+  const sort = useSyncExternalStore(subscribeToSortChange, getSortFromUrl, () => "newest");
 
   const sortedProducts = useMemo(() => {
     return [...products].sort((a, b) => {
@@ -53,11 +40,10 @@ export function SortableProductGrid({
   }, [products, sort]);
 
   function updateSort(value: SortOption["value"]) {
-    setSort(value);
-
     const url = new URL(window.location.href);
     url.searchParams.set("sort", value);
     window.history.pushState({}, "", url);
+    window.dispatchEvent(new Event("catalog-sort-change"));
   }
 
   return (
@@ -89,4 +75,29 @@ export function SortableProductGrid({
       </div>
     </>
   );
+}
+
+function getSortFromUrl(): SortOption["value"] {
+  if (typeof window === "undefined") {
+    return "newest";
+  }
+
+  const params = new URLSearchParams(window.location.search);
+  const value = params.get("sort");
+
+  if (value === "name" || value === "price" || value === "newest") {
+    return value;
+  }
+
+  return "newest";
+}
+
+function subscribeToSortChange(callback: () => void) {
+  window.addEventListener("popstate", callback);
+  window.addEventListener("catalog-sort-change", callback);
+
+  return () => {
+    window.removeEventListener("popstate", callback);
+    window.removeEventListener("catalog-sort-change", callback);
+  };
 }
