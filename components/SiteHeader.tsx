@@ -48,11 +48,11 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="-my-3 hidden self-stretch lg:flex">
+        <nav className="-my-3 hidden items-stretch gap-1 self-stretch lg:flex">
           <div className="group flex items-center">
             <Link
               href={localizedPath(locale, "/categories")}
-              className="rounded-md px-3 py-2 text-sm font-bold text-stone-800 hover:bg-stone-100 dark:text-stone-100 dark:hover:bg-stone-800"
+              className="flex items-center rounded-md px-3 py-2 text-sm font-bold text-stone-800 hover:bg-stone-100 dark:text-stone-100 dark:hover:bg-stone-800"
             >
               {copy.nav.categories}
             </Link>
@@ -77,13 +77,13 @@ export function SiteHeader() {
           </div>
           <Link
             href={localizedPath(locale, "/brands")}
-            className="rounded-md px-3 py-2 text-sm font-bold text-stone-800 hover:bg-stone-100 dark:text-stone-100 dark:hover:bg-stone-800"
+            className="flex items-center rounded-md px-3 py-2 text-sm font-bold text-stone-800 hover:bg-stone-100 dark:text-stone-100 dark:hover:bg-stone-800"
           >
             {copy.nav.brands}
           </Link>
           <Link
             href={localizedPath(locale, "/search")}
-            className="rounded-md px-3 py-2 text-sm font-bold text-stone-800 hover:bg-stone-100 dark:text-stone-100 dark:hover:bg-stone-800"
+            className="flex items-center rounded-md px-3 py-2 text-sm font-bold text-stone-800 hover:bg-stone-100 dark:text-stone-100 dark:hover:bg-stone-800"
           >
             {copy.nav.search}
           </Link>
