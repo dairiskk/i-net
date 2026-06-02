@@ -49,6 +49,7 @@ export default async function LocalizedCategoryPage({
   const localizedParentCategory = parentCategory ? localizeCategory(parentCategory, locale) : undefined;
   const categoryProducts = getProductsByCategory(category.id);
   const childCategories = getSubcategories(category.id);
+  const hasSubcategories = childCategories.length > 0;
   const availableTypes = [...new Set(products.map((product) => product.type))];
   const sortOptions = [
     { value: "newest", label: copy.catalog.newest },
@@ -101,15 +102,15 @@ export default async function LocalizedCategoryPage({
         </div>
       </section>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-[280px_1fr]">
-        <aside className="self-start rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
-          <h2 className="text-lg font-black text-stone-950">{copy.catalog.filters}</h2>
-          <div className="mt-5 grid gap-5 text-sm">
-            <div>
-              <p className="font-bold text-stone-900">{copy.catalog.subcategory}</p>
-              <div className="mt-2 grid gap-2">
-                {childCategories.length ? (
-                  childCategories.map((subcategory) => (
+      <div className={`mt-8 grid gap-8 ${hasSubcategories ? "lg:grid-cols-[280px_1fr]" : ""}`}>
+        {hasSubcategories ? (
+          <aside className="self-start rounded-lg border border-stone-200 bg-white p-5 shadow-sm">
+            <h2 className="text-lg font-black text-stone-950">{copy.catalog.filters}</h2>
+            <div className="mt-5 grid gap-5 text-sm">
+              <div>
+                <p className="font-bold text-stone-900">{copy.catalog.subcategory}</p>
+                <div className="mt-2 grid gap-2">
+                  {childCategories.map((subcategory) => (
                     <Link
                       key={subcategory.id}
                       href={localizedPath(locale, `/categories/${subcategory.slug}`)}
@@ -117,24 +118,22 @@ export default async function LocalizedCategoryPage({
                     >
                       {localizeCategory(subcategory, locale).name}
                     </Link>
-                  ))
-                ) : (
-                  <span className="text-stone-500">{copy.catalog.noDeeperCategory}</span>
-                )}
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="font-bold text-stone-900">{copy.catalog.productType}</p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {availableTypes.slice(0, 8).map((type) => (
+                    <span key={type} className="rounded-md border border-stone-200 px-2 py-1 text-stone-600">
+                      {type}
+                    </span>
+                  ))}
+                </div>
               </div>
             </div>
-            <div>
-              <p className="font-bold text-stone-900">{copy.catalog.productType}</p>
-              <div className="mt-2 flex flex-wrap gap-2">
-                {availableTypes.slice(0, 8).map((type) => (
-                  <span key={type} className="rounded-md border border-stone-200 px-2 py-1 text-stone-600">
-                    {type}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </aside>
+          </aside>
+        ) : null}
 
         <section>
           <div className="flex items-center justify-between gap-4">
