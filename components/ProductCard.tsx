@@ -41,7 +41,9 @@ export function ProductCard({ product, locale = defaultLocale }: ProductCardProp
         <div className="space-y-3 p-4">
           <div className="flex items-center justify-between gap-3 text-xs font-semibold uppercase tracking-wide text-stone-500">
             <span>{localizedBrand?.name}</span>
-            <span>{localizeAvailability(product, locale)}</span>
+            <span className="rounded-md bg-emerald-50 px-2 py-1 font-bold text-emerald-950 dark:bg-emerald-900/45 dark:text-emerald-100">
+              {localizeAvailability(product, locale)}
+            </span>
           </div>
           <div>
             <h3 className="text-lg font-semibold leading-6 text-stone-950">{localizedProduct.name}</h3>

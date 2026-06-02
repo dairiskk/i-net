@@ -121,7 +121,7 @@ export default async function LocalizedProductPage({
             </div>
             <div className="flex items-center justify-between gap-4">
               <span className="text-sm font-bold text-stone-500">{copy.product.availability}</span>
-              <span className="rounded-md bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-950">
+              <span className="rounded-md bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-950 dark:bg-emerald-900/45 dark:text-emerald-100">
                 {localizeAvailability(product, locale)}
               </span>
             </div>
