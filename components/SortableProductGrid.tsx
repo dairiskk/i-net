@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { ProductCard } from "@/components/ProductCard";
 import type { Product } from "@/lib/catalog";
 import type { Locale } from "@/lib/i18n";
@@ -23,16 +23,20 @@ export function SortableProductGrid({
   sortLabel,
   sortOptions,
 }: SortableProductGridProps) {
-  const [sort, setSort] = useState<SortOption["value"]>("newest");
+  const [sort, setSort] = useState<SortOption["value"]>(() => {
+    if (typeof window === "undefined") {
+      return "newest";
+    }
 
-  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const value = params.get("sort");
 
     if (value === "name" || value === "price" || value === "newest") {
-      setSort(value);
+      return value;
     }
-  }, []);
+
+    return "newest";
+  });
 
   const sortedProducts = useMemo(() => {
     return [...products].sort((a, b) => {
